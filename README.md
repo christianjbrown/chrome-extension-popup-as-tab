@@ -1,4 +1,4 @@
-# Popup As Tab 🪄
+# Popup As Tab Chrome Extension 🪄
 
 You know those little chromeless windows that sign-in flows, payment pages and web apps love to throw at you? This Chrome extension catches them and turns each one into a plain old tab, right next to the tab that opened it. No options page, no settings, no button. It's just always on.
 
