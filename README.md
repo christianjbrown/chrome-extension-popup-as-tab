@@ -66,7 +66,7 @@ npm test          # the unit tests
 npm run ci        # everything CI checks: format, lint, types, unused code, 100% coverage, build
 ```
 
-`npm run ci` has to pass before a push leaves your machine (the pre-push hook runs it), and coverage has to stay at 100% for lines, branches, functions and statements, or it fails.
+`npm run ci` is exactly what CI runs, and coverage has to stay at 100% for lines, branches, functions and statements, or it fails. To run it before every push, point git at the committed hook: `git config core.hooksPath .githooks`.
 
 How it fits together, all in `src`:
 
@@ -79,3 +79,7 @@ How it fits together, all in `src`:
 - **`tab-placer.ts`** moves the tab, makes it active and focuses its window.
 
 Every class gets its collaborators through its constructor, behind an interface, so each one is tested on its own with fakes. A new way of picking where a tab goes is a new rule class, not an edit to an old one.
+
+## Licence 📄
+
+MIT. See [LICENSE](LICENSE).

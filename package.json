@@ -2,6 +2,7 @@
   "name": "chrome-extension-popup-as-tab",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "description": "Chrome extension: popup windows open as ordinary tabs, right next to the tab that opened them.",
   "type": "module",
   "scripts": {
