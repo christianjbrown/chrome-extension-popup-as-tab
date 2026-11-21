@@ -8,14 +8,17 @@ import { OpenerFinder } from "./opener-finder";
 import { OrdinaryWindowOpenersOnly } from "./ordinary-window-openers-only";
 import { PopupConverter } from "./popup-converter";
 import { TabPlacer } from "./tab-placer";
+import { VisibleSameProfile } from "./visible-same-profile";
+
+const receiving = new VisibleSameProfile();
 
 const converter = new PopupConverter(
   new OpenedByPage(chrome.tabs),
   new OpenerFinder(chrome.tabs, chrome.windows),
   new OrdinaryWindowOpenersOnly(
     new FirstDestination([
-      new BesideOpener(),
-      new LastFocusedWindow(chrome.windows),
+      new BesideOpener(receiving),
+      new LastFocusedWindow(chrome.windows, receiving),
     ]),
   ),
   new TabPlacer(chrome.tabs, chrome.tabs, chrome.windows),

@@ -1,5 +1,6 @@
-import { WINDOW_TYPE, isMinimised, type BrowserWindow } from "./browser";
+import { WINDOW_TYPE, type BrowserWindow } from "./browser";
 import type { Destination, DestinationRule, PopupContext } from "./destination";
+import type { ReceivingWindow } from "./receiving-window";
 
 interface WindowQuery {
   populate: boolean;
@@ -28,11 +29,13 @@ function lastUsed(window: BrowserWindow): number {
   );
 }
 
-// The end of the ordinary window used most recently, skipping minimised ones
-// and any on the other side of the incognito line, which Chrome will not let
-// a tab cross.
+// The end of the ordinary window used most recently, skipping any the tab
+// cannot go to.
 export class LastFocusedWindow implements DestinationRule {
-  constructor(private readonly windows: WindowSource) {}
+  constructor(
+    private readonly windows: WindowSource,
+    private readonly receiving: ReceivingWindow,
+  ) {}
 
   async pick({ incognito }: PopupContext): Promise<Destination | undefined> {
     const all = await this.windows.getAll({
@@ -40,9 +43,7 @@ export class LastFocusedWindow implements DestinationRule {
       windowTypes: [WINDOW_TYPE.normal],
     });
     const latest = all
-      .filter(
-        (window) => window.incognito === incognito && !isMinimised(window),
-      )
+      .filter((window) => this.receiving.accepts(window, incognito))
       .reduce<BrowserWindow | undefined>(
         (best, window) =>
           best === undefined || lastUsed(window) > lastUsed(best)
