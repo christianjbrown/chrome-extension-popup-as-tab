@@ -8,10 +8,14 @@ describe("TabPlacer", () => {
         calls.push(`${name} ${JSON.stringify(args)}`);
         return Promise.resolve();
       });
-    const tabs = { move: record("move"), update: record("update") };
+    const tabs = { move: record("move") };
+    const activator = { update: record("update") };
     const windows = { update: record("focus") };
 
-    await new TabPlacer(tabs, windows).place(20, { windowId: 1, index: 3 });
+    await new TabPlacer(tabs, activator, windows).place(20, {
+      windowId: 1,
+      index: 3,
+    });
 
     expect(calls).toEqual([
       'move [20,{"windowId":1,"index":3}]',

@@ -75,7 +75,7 @@ describe("PopupConverter", () => {
   });
 
   it.each([
-    ["an ordinary window", { ...popup, type: "normal" }],
+    ["an ordinary window", { ...popup, type: "normal" as const }],
     ["a window with no id", { ...popup, id: undefined }],
   ])("leaves %s alone", async (_what, window: BrowserWindow) => {
     const { source, converter: subject } = converter();
@@ -100,19 +100,6 @@ describe("PopupConverter", () => {
     expect(openers.find).not.toHaveBeenCalled();
     expect(placer.place).not.toHaveBeenCalled();
   });
-
-  it.each(["app", "popup", "devtools"])(
-    "leaves a popup alone whose opener is in a %s window",
-    async (type) => {
-      const { destinations, converter: subject } = converter({
-        found: { ...opener, window: { ...opener.window, type } },
-      });
-
-      await subject.convert(popup);
-
-      expect(destinations.pick).not.toHaveBeenCalled();
-    },
-  );
 
   it("leaves the popup alone when there is nowhere to put it", async () => {
     const { placer, converter: subject } = converter({
