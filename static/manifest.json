@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Christian's Popup As Tab",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Popup windows open as ordinary tabs instead, right next to the tab that opened them.",
   "minimum_chrome_version": "126",
   "background": {
