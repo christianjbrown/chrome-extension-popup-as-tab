@@ -16,11 +16,15 @@ const WITH_TABS = true;
 // Index -1 is Chrome's "at the end".
 const AT_THE_END = -1;
 
+// The time given to a tab, or a window, that has never been used, which sorts
+// before any real one.
+const NEVER_USED = 0;
+
 // When a window was last used: the most recent time any of its tabs was.
 function lastUsed(window: BrowserWindow): number {
   return Math.max(
-    0,
-    ...(window.tabs ?? []).map((tab) => tab.lastAccessed ?? 0),
+    NEVER_USED,
+    ...(window.tabs ?? []).map((tab) => tab.lastAccessed ?? NEVER_USED),
   );
 }
 
