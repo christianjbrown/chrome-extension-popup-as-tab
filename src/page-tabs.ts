@@ -6,8 +6,7 @@ export interface PageTab {
   openerTabId: number;
 }
 
-// Decides which popups qualify to become a tab, and finds the tab of one that
-// does.
+// Finds the tab of a popup that qualifies to become a tab.
 export interface PageTabs {
   find(popup: BrowserWindow): Promise<PageTab | undefined>;
 }

@@ -2,18 +2,20 @@
 import { WINDOW_TYPE } from "./browser";
 import { BesideOpener } from "./beside-opener";
 import { FirstDestination } from "./first-destination";
+import { FirstPopupTab } from "./first-popup-tab";
 import { LastFocusedWindow } from "./last-focused-window";
 import { OpenedByPage } from "./opened-by-page";
 import { OpenerFinder } from "./opener-finder";
 import { OrdinaryWindowOpenersOnly } from "./ordinary-window-openers-only";
 import { PopupConverter } from "./popup-converter";
+import { QualifyingPageTabs } from "./qualifying-page-tabs";
 import { TabPlacer } from "./tab-placer";
 import { VisibleSameProfile } from "./visible-same-profile";
 
 const receiving = new VisibleSameProfile();
 
 const converter = new PopupConverter(
-  new OpenedByPage(chrome.tabs),
+  new QualifyingPageTabs(new FirstPopupTab(chrome.tabs), new OpenedByPage()),
   new OpenerFinder(chrome.tabs, chrome.windows),
   new OrdinaryWindowOpenersOnly(
     new FirstDestination([
