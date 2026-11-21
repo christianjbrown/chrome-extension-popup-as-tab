@@ -1,3 +1,4 @@
+import { isMinimised } from "./browser";
 import type { Destination, DestinationRule, PopupContext } from "./destination";
 
 // Right after the tab that opened the popup, as long as its window is still
@@ -8,7 +9,7 @@ export class BesideOpener implements DestinationRule {
     if (
       opener === undefined ||
       window?.id === undefined ||
-      window.state === "minimized" ||
+      isMinimised(window) ||
       window.incognito !== incognito
     ) {
       return Promise.resolve(undefined);

@@ -1,14 +1,17 @@
-import type { BrowserWindow } from "./browser";
+import { WINDOW_TYPE, isMinimised, type BrowserWindow } from "./browser";
 import type { Destination, DestinationRule, PopupContext } from "./destination";
 
 interface WindowQuery {
   populate: boolean;
-  windowTypes: "normal"[];
+  windowTypes: (typeof WINDOW_TYPE.normal)[];
 }
 
 export interface WindowSource {
   getAll(query: WindowQuery): Promise<BrowserWindow[]>;
 }
+
+// Ask for each window's tabs too, which is where "last used" comes from.
+const WITH_TABS = true;
 
 // Index -1 is Chrome's "at the end".
 const AT_THE_END = -1;
@@ -29,13 +32,12 @@ export class LastFocusedWindow implements DestinationRule {
 
   async pick({ incognito }: PopupContext): Promise<Destination | undefined> {
     const all = await this.windows.getAll({
-      populate: true,
-      windowTypes: ["normal"],
+      populate: WITH_TABS,
+      windowTypes: [WINDOW_TYPE.normal],
     });
     const latest = all
       .filter(
-        (window) =>
-          window.incognito === incognito && window.state !== "minimized",
+        (window) => window.incognito === incognito && !isMinimised(window),
       )
       .reduce<BrowserWindow | undefined>(
         (best, window) =>

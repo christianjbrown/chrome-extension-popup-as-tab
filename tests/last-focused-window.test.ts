@@ -5,9 +5,9 @@ const used = (
   id: number,
   lastAccessed: number[],
   more: Partial<BrowserWindow> = {},
-) => ({
+): BrowserWindow => ({
   id,
-  type: "normal",
+  type: "normal" as const,
   incognito: false,
   tabs: lastAccessed.map((time, index) => ({
     id: id * 10 + index,

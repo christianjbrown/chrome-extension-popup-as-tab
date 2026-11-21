@@ -8,10 +8,24 @@ export interface BrowserTab {
   lastAccessed?: number | undefined;
 }
 
+// The window kinds and states the extension tells apart.
+export const WINDOW_TYPE = { normal: "normal", popup: "popup" } as const;
+const WINDOW_STATE = { minimized: "minimized" } as const;
+
+// Chrome has other kinds and states too; they only ever mean "something else".
+export type WindowType =
+  (typeof WINDOW_TYPE)[keyof typeof WINDOW_TYPE] | "panel" | "app" | "devtools";
+type WindowState =
+  | (typeof WINDOW_STATE)[keyof typeof WINDOW_STATE]
+  | "normal"
+  | "maximized"
+  | "fullscreen"
+  | "locked-fullscreen";
+
 export interface BrowserWindow {
   id?: number | undefined;
-  type?: string | undefined;
-  state?: string | undefined;
+  type?: WindowType | undefined;
+  state?: WindowState | undefined;
   incognito: boolean;
   tabs?: BrowserTab[] | undefined;
 }
@@ -20,4 +34,9 @@ export interface BrowserWindow {
 export interface Opener {
   tab: BrowserTab;
   window: BrowserWindow;
+}
+
+// A minimised window would hide a tab the moment it arrived.
+export function isMinimised(window: BrowserWindow): boolean {
+  return window.state === WINDOW_STATE.minimized;
 }

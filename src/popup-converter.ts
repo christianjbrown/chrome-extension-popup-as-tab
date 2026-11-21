@@ -1,4 +1,4 @@
-import type { BrowserTab, BrowserWindow } from "./browser";
+import { WINDOW_TYPE, type BrowserTab, type BrowserWindow } from "./browser";
 import type { DestinationRule } from "./destination";
 import type { Openers } from "./opener-finder";
 import type { TabPlacement } from "./tab-placer";
@@ -16,8 +16,7 @@ interface PageTab {
 //
 // Only popups a web page opened are touched, and Chrome says which those are:
 // their tab has an opener. Popups an extension makes have none, and are left
-// alone, as are popups whose opener lives in an app window, DevTools or
-// another popup.
+// alone.
 export class PopupConverter {
   constructor(
     private readonly tabs: TabQuery,
@@ -41,9 +40,6 @@ export class PopupConverter {
       return;
     }
     const opener = await this.openers.find(tab.openerTabId);
-    if (opener !== undefined && opener.window.type !== "normal") {
-      return;
-    }
     const destination = await this.destinations.pick({
       incognito: popup.incognito,
       opener,
@@ -55,7 +51,7 @@ export class PopupConverter {
 
   // The popup's tab, if a page opened it.
   private async pageTab(popup: BrowserWindow): Promise<PageTab | undefined> {
-    if (popup.type !== "popup" || popup.id === undefined) {
+    if (popup.type !== WINDOW_TYPE.popup || popup.id === undefined) {
       return undefined;
     }
     const [tab] = await this.tabs.query({ windowId: popup.id });
