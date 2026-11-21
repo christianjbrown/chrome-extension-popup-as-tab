@@ -1,16 +1,17 @@
-import { isMinimised } from "./browser";
 import type { Destination, DestinationRule, PopupContext } from "./destination";
+import type { ReceivingWindow } from "./receiving-window";
 
 // Right after the tab that opened the popup, as long as its window is still
-// on screen. A minimised window would hide the tab the moment it arrived.
+// one the tab can go to.
 export class BesideOpener implements DestinationRule {
+  constructor(private readonly receiving: ReceivingWindow) {}
+
   pick({ incognito, opener }: PopupContext): Promise<Destination | undefined> {
     const window = opener?.window;
     if (
       opener === undefined ||
       window?.id === undefined ||
-      isMinimised(window) ||
-      window.incognito !== incognito
+      !this.receiving.accepts(window, incognito)
     ) {
       return Promise.resolve(undefined);
     }

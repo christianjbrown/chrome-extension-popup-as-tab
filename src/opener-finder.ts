@@ -1,16 +1,6 @@
-import type { BrowserTab, BrowserWindow, Opener } from "./browser";
-
-export interface TabLookup {
-  get(tabId: number): Promise<BrowserTab>;
-}
-
-export interface WindowLookup {
-  get(windowId: number): Promise<BrowserWindow>;
-}
-
-export interface Openers {
-  find(tabId: number): Promise<Opener | undefined>;
-}
+import type { Opener } from "./browser";
+import type { TabLookup, WindowLookup } from "./browser-apis";
+import type { Openers } from "./openers";
 
 // Looks up the tab that opened a popup. Chrome rejects the lookup when that
 // tab, or its window, has closed since, and then there is no opener to go by.

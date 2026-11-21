@@ -71,12 +71,16 @@ npm run ci        # everything CI checks: format, lint, types, unused code, 100%
 How it fits together, all in `src`:
 
 - **`main.ts`** wires the pieces to Chrome and listens for new popup windows. Nothing else touches `chrome` directly.
-- **`popup-converter.ts`** decides whether a popup is a page's popup, and if so where it goes, then moves it.
+- **`popup-converter.ts`** finds a qualifying popup's tab, asks where it goes, then moves it.
+- **`opened-by-page.ts`** decides which popups qualify: only those a web page opened.
 - **`opener-finder.ts`** looks up the tab that opened the popup, and its window, if they're still around.
-- **`destination.ts`** asks a list of rules for a destination and takes the first answer.
+- **`first-destination.ts`** asks a list of rules for a destination and takes the first answer.
 - **`beside-opener.ts`** is the first rule: right after the opener, if its window is on screen.
 - **`last-focused-window.ts`** is the fallback: the end of the ordinary window you used most recently.
-- **`tab-placer.ts`** moves the tab, makes it active and focuses its window.
+- **`visible-same-profile.ts`** says which windows can take the tab: on screen, and on the same side of incognito.
+- **`tab-placer.ts`** moves the tab, makes it active and focuses its window, or leaves it be if Chrome refuses the move.
+- **`browser.ts`** and **`browser-apis.ts`** describe the bits of Chrome's tabs and windows the extension reads and calls.
+- The other interfaces each live in a file of their own: `destination.ts`, `page-tabs.ts`, `openers.ts`, `receiving-window.ts` and `tab-placement.ts`.
 
 Every class gets its collaborators through its constructor, behind an interface, so each one is tested on its own with fakes. A new way of picking where a tab goes is a new rule class, not an edit to an old one.
 

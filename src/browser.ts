@@ -10,7 +10,7 @@ export interface BrowserTab {
 
 // The window kinds and states the extension tells apart.
 export const WINDOW_TYPE = { normal: "normal", popup: "popup" } as const;
-const WINDOW_STATE = { minimized: "minimized" } as const;
+export const WINDOW_STATE = { minimized: "minimized" } as const;
 
 // Chrome has other kinds and states too; they only ever mean "something else".
 export type WindowType =
@@ -34,9 +34,4 @@ export interface BrowserWindow {
 export interface Opener {
   tab: BrowserTab;
   window: BrowserWindow;
-}
-
-// A minimised window would hide a tab the moment it arrived.
-export function isMinimised(window: BrowserWindow): boolean {
-  return window.state === WINDOW_STATE.minimized;
 }

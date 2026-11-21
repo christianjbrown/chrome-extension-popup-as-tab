@@ -1,5 +1,5 @@
 import type { DestinationRule } from "../src/destination";
-import { FirstDestination } from "../src/destination";
+import { FirstDestination } from "../src/first-destination";
 
 const rule = (answer?: { windowId: number; index: number }) => ({
   pick: vi.fn<DestinationRule["pick"]>().mockResolvedValue(answer),
