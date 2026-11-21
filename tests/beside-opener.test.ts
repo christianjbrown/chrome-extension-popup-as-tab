@@ -3,7 +3,7 @@ import type { BrowserWindow } from "../src/browser";
 
 const opener = (window: Partial<BrowserWindow>) => ({
   tab: { id: 10, index: 4, windowId: 1 },
-  window: { id: 1, type: "normal", incognito: false, ...window },
+  window: { id: 1, type: "normal" as const, incognito: false, ...window },
 });
 
 describe("BesideOpener", () => {
