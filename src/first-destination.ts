@@ -4,13 +4,11 @@ import type { Destination, DestinationRule, PopupContext } from "./destination";
 export class FirstDestination implements DestinationRule {
   constructor(private readonly rules: DestinationRule[]) {}
 
-  async pick(context: PopupContext): Promise<Destination | undefined> {
-    for (const rule of this.rules) {
-      const destination = await rule.pick(context);
-      if (destination !== undefined) {
-        return destination;
-      }
-    }
-    return undefined;
+  // Once a rule has answered, the ones after it are not asked.
+  pick(context: PopupContext): Promise<Destination | undefined> {
+    return this.rules.reduce<Promise<Destination | undefined>>(
+      (earlier, rule) => earlier.then((found) => found ?? rule.pick(context)),
+      Promise.resolve(undefined),
+    );
   }
 }
