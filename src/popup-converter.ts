@@ -1,7 +1,7 @@
 import type { BrowserWindow } from "./browser";
 import type { DestinationRule } from "./destination";
 import type { Openers } from "./openers";
-import type { PageTabs } from "./page-tabs";
+import type { PageTab, PageTabs } from "./page-tabs";
 import type { TabPlacement } from "./tab-placement";
 
 // Turns a page's popup window into a tab in an ordinary window: finds the
@@ -17,14 +17,15 @@ export class PopupConverter {
 
   async convert(popup: BrowserWindow): Promise<void> {
     const tab = await this.pageTabs.find(popup);
-    if (tab === undefined) {
-      return;
+    if (tab !== undefined) {
+      await this.move(tab, popup.incognito);
     }
+  }
+
+  // A tab no rule has a destination for stays where it is.
+  private async move(tab: PageTab, incognito: boolean): Promise<void> {
     const opener = await this.openers.find(tab.openerTabId);
-    const destination = await this.destinations.pick({
-      incognito: popup.incognito,
-      opener,
-    });
+    const destination = await this.destinations.pick({ incognito, opener });
     if (destination !== undefined) {
       await this.placer.place(tab.id, destination);
     }

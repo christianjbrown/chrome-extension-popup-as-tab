@@ -21,6 +21,22 @@ function lastUsed(window: BrowserWindow): number {
   );
 }
 
+// Whichever of the two windows was used more recently. A tie keeps the first.
+function moreRecent(best: BrowserWindow, window: BrowserWindow): BrowserWindow {
+  return lastUsed(window) > lastUsed(best) ? window : best;
+}
+
+function latestOf(
+  best: BrowserWindow | undefined,
+  window: BrowserWindow,
+): BrowserWindow {
+  return best === undefined ? window : moreRecent(best, window);
+}
+
+function endOf(windowId: number | undefined): Destination | undefined {
+  return windowId === undefined ? undefined : { windowId, index: AT_THE_END };
+}
+
 // The end of the ordinary window used most recently, skipping any the tab
 // cannot go to.
 export class LastFocusedWindow implements DestinationRule {
@@ -36,15 +52,7 @@ export class LastFocusedWindow implements DestinationRule {
     });
     const latest = all
       .filter((window) => this.receiving.accepts(window, incognito))
-      .reduce<BrowserWindow | undefined>(
-        (best, window) =>
-          best === undefined || lastUsed(window) > lastUsed(best)
-            ? window
-            : best,
-        undefined,
-      );
-    return latest?.id === undefined
-      ? undefined
-      : { windowId: latest.id, index: AT_THE_END };
+      .reduce<BrowserWindow | undefined>(latestOf, undefined);
+    return endOf(latest?.id);
   }
 }
