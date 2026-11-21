@@ -1,9 +1,6 @@
-import { WINDOW_TYPE, type BrowserTab, type BrowserWindow } from "./browser";
+import { WINDOW_TYPE, type BrowserWindow } from "./browser";
+import type { TabQuery } from "./browser-apis";
 import type { PageTab, PageTabs } from "./page-tabs";
-
-export interface TabQuery {
-  query(query: { windowId: number }): Promise<BrowserTab[]>;
-}
 
 // Only popups a web page opened qualify, and Chrome says which those are:
 // their tab has an opener. Popups an extension makes have none, and are left

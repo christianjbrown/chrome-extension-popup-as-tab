@@ -1,8 +1,8 @@
 import type { BrowserWindow } from "./browser";
 import type { DestinationRule } from "./destination";
-import type { Openers } from "./opener-finder";
+import type { Openers } from "./openers";
 import type { PageTabs } from "./page-tabs";
-import type { TabPlacement } from "./tab-placer";
+import type { TabPlacement } from "./tab-placement";
 
 // Turns a page's popup window into a tab in an ordinary window: finds the
 // popup's tab, asks where it goes, and moves it there. Which popups qualify is

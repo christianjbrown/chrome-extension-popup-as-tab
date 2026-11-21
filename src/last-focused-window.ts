@@ -1,15 +1,7 @@
 import { WINDOW_TYPE, type BrowserWindow } from "./browser";
+import type { WindowSource } from "./browser-apis";
 import type { Destination, DestinationRule, PopupContext } from "./destination";
 import type { ReceivingWindow } from "./receiving-window";
-
-interface WindowQuery {
-  populate: boolean;
-  windowTypes: (typeof WINDOW_TYPE.normal)[];
-}
-
-export interface WindowSource {
-  getAll(query: WindowQuery): Promise<BrowserWindow[]>;
-}
 
 // Ask for each window's tabs too, which is where "last used" comes from.
 const WITH_TABS = true;

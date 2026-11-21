@@ -1,20 +1,6 @@
+import type { TabActivator, TabMover, WindowFocuser } from "./browser-apis";
 import type { Destination } from "./destination";
-
-export interface TabMover {
-  move(tabId: number, properties: Destination): Promise<unknown>;
-}
-
-export interface TabActivator {
-  update(tabId: number, properties: { active: boolean }): Promise<unknown>;
-}
-
-export interface WindowFocuser {
-  update(windowId: number, properties: { focused: boolean }): Promise<unknown>;
-}
-
-export interface TabPlacement {
-  place(tabId: number, destination: Destination): Promise<void>;
-}
+import type { TabPlacement } from "./tab-placement";
 
 // Moves the tab across and brings it to the front. Chrome closes the popup
 // window by itself once its only tab has gone.
