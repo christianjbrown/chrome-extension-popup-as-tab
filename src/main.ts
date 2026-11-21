@@ -1,7 +1,7 @@
 // The service worker: builds the object graph and connects it to Chrome's events.
 import { WINDOW_TYPE } from "./browser";
 import { BesideOpener } from "./beside-opener";
-import { FirstDestination } from "./destination";
+import { FirstDestination } from "./first-destination";
 import { LastFocusedWindow } from "./last-focused-window";
 import { OpenedByPage } from "./opened-by-page";
 import { OpenerFinder } from "./opener-finder";

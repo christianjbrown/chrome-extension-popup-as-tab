@@ -74,7 +74,8 @@ How it fits together, all in `src`:
 - **`popup-converter.ts`** finds a qualifying popup's tab, asks where it goes, then moves it.
 - **`opened-by-page.ts`** decides which popups qualify: only those a web page opened.
 - **`opener-finder.ts`** looks up the tab that opened the popup, and its window, if they're still around.
-- **`destination.ts`** asks a list of rules for a destination and takes the first answer.
+- **`destination.ts`** says what a destination and a destination rule are.
+- **`first-destination.ts`** asks a list of rules for a destination and takes the first answer.
 - **`beside-opener.ts`** is the first rule: right after the opener, if its window is on screen.
 - **`last-focused-window.ts`** is the fallback: the end of the ordinary window you used most recently.
 - **`visible-same-profile.ts`** says which windows can take the tab: on screen, and on the same side of incognito.
