@@ -1,9 +1,10 @@
-import type { BrowserTab, BrowserWindow, Opener } from "../src/browser";
+import type { BrowserWindow, Opener } from "../src/browser";
 import type { Destination, DestinationRule } from "../src/destination";
+import type { PageTab } from "../src/page-tabs";
 import { PopupConverter } from "../src/popup-converter";
 
 const popup: BrowserWindow = { id: 2, type: "popup", incognito: false };
-const popupTab: BrowserTab = { id: 20, index: 0, windowId: 2, openerTabId: 10 };
+const pageTab: PageTab = { id: 20, openerTabId: 10 };
 const opener: Opener = {
   tab: { id: 10, index: 0, windowId: 1 },
   window: { id: 1, type: "normal", incognito: false },
@@ -11,34 +12,34 @@ const opener: Opener = {
 const here: Destination = { windowId: 1, index: 1 };
 
 interface Given {
-  tabs?: BrowserTab[];
+  tab?: PageTab | undefined;
   found?: Opener | undefined;
   destination?: Destination | undefined;
 }
 
 function converter(given: Given = {}) {
-  const { tabs = [popupTab] } = given;
+  const tab = "tab" in given ? given.tab : pageTab;
   const found = "found" in given ? given.found : opener;
   const destination = "destination" in given ? given.destination : here;
-  const source = { query: vi.fn().mockResolvedValue(tabs) };
+  const pageTabs = { find: vi.fn().mockResolvedValue(tab) };
   const openers = { find: vi.fn().mockResolvedValue(found) };
   const destinations = {
     pick: vi.fn<DestinationRule["pick"]>().mockResolvedValue(destination),
   };
   const placer = { place: vi.fn().mockResolvedValue(undefined) };
   return {
-    source,
+    pageTabs,
     openers,
     destinations,
     placer,
-    converter: new PopupConverter(source, openers, destinations, placer),
+    converter: new PopupConverter(pageTabs, openers, destinations, placer),
   };
 }
 
 describe("PopupConverter", () => {
   it("moves the popup's tab to where the rules say", async () => {
     const {
-      source,
+      pageTabs,
       openers,
       destinations,
       placer,
@@ -47,7 +48,7 @@ describe("PopupConverter", () => {
 
     await subject.convert(popup);
 
-    expect(source.query).toHaveBeenCalledWith({ windowId: 2 });
+    expect(pageTabs.find).toHaveBeenCalledWith(popup);
     expect(openers.find).toHaveBeenCalledWith(10);
     expect(destinations.pick).toHaveBeenCalledWith({
       incognito: false,
@@ -74,26 +75,12 @@ describe("PopupConverter", () => {
     expect(placer.place).toHaveBeenCalledWith(20, here);
   });
 
-  it.each([
-    ["an ordinary window", { ...popup, type: "normal" as const }],
-    ["a window with no id", { ...popup, id: undefined }],
-  ])("leaves %s alone", async (_what, window: BrowserWindow) => {
-    const { source, converter: subject } = converter();
-
-    await subject.convert(window);
-
-    expect(source.query).not.toHaveBeenCalled();
-  });
-
-  it.each([
-    ["has no tab", []],
-    ["has a tab with no id", [{ ...popupTab, id: undefined }]],
-    [
-      "an extension opened, with no opener",
-      [{ ...popupTab, openerTabId: undefined }],
-    ],
-  ])("leaves a popup alone that %s", async (_what, tabs: BrowserTab[]) => {
-    const { openers, placer, converter: subject } = converter({ tabs });
+  it("leaves a popup alone that does not qualify", async () => {
+    const {
+      openers,
+      placer,
+      converter: subject,
+    } = converter({ tab: undefined });
 
     await subject.convert(popup);
 

@@ -71,7 +71,8 @@ npm run ci        # everything CI checks: format, lint, types, unused code, 100%
 How it fits together, all in `src`:
 
 - **`main.ts`** wires the pieces to Chrome and listens for new popup windows. Nothing else touches `chrome` directly.
-- **`popup-converter.ts`** decides whether a popup is a page's popup, and if so where it goes, then moves it.
+- **`popup-converter.ts`** finds a qualifying popup's tab, asks where it goes, then moves it.
+- **`opened-by-page.ts`** decides which popups qualify: only those a web page opened.
 - **`opener-finder.ts`** looks up the tab that opened the popup, and its window, if they're still around.
 - **`destination.ts`** asks a list of rules for a destination and takes the first answer.
 - **`beside-opener.ts`** is the first rule: right after the opener, if its window is on screen.
