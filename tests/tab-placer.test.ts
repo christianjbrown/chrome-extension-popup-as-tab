@@ -23,4 +23,35 @@ describe("TabPlacer", () => {
       'focus [1,{"focused":true}]',
     ]);
   });
+
+  it("leaves the tab where it is when Chrome refuses the move", async () => {
+    const tabs = {
+      move: vi.fn().mockRejectedValue(new Error("Tabs cannot be edited")),
+    };
+    const activator = { update: vi.fn() };
+    const windows = { update: vi.fn() };
+
+    await expect(
+      new TabPlacer(tabs, activator, windows).place(20, {
+        windowId: 1,
+        index: 3,
+      }),
+    ).resolves.toBeUndefined();
+    expect(activator.update).not.toHaveBeenCalled();
+    expect(windows.update).not.toHaveBeenCalled();
+  });
+
+  it("lets any other failure surface", async () => {
+    const failure = new Error("No tab with id: 20");
+    const tabs = { move: vi.fn().mockResolvedValue({}) };
+    const activator = { update: vi.fn().mockRejectedValue(failure) };
+    const windows = { update: vi.fn() };
+
+    await expect(
+      new TabPlacer(tabs, activator, windows).place(20, {
+        windowId: 1,
+        index: 3,
+      }),
+    ).rejects.toBe(failure);
+  });
 });

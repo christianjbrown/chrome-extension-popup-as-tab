@@ -98,10 +98,11 @@ describe("PopupConverter", () => {
     expect(placer.place).not.toHaveBeenCalled();
   });
 
-  it("leaves the popup as it is when Chrome refuses the move", async () => {
-    const { placer, converter: subject } = converter();
-    placer.place.mockRejectedValueOnce(new Error("Tabs cannot be edited"));
+  it("lets a failure surface rather than hiding it", async () => {
+    const { pageTabs, converter: subject } = converter();
+    const failure = new Error("No window with id: 2");
+    pageTabs.find.mockRejectedValueOnce(failure);
 
-    await expect(subject.convert(popup)).resolves.toBeUndefined();
+    await expect(subject.convert(popup)).rejects.toBe(failure);
   });
 });

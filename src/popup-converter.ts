@@ -16,15 +16,6 @@ export class PopupConverter {
   ) {}
 
   async convert(popup: BrowserWindow): Promise<void> {
-    try {
-      await this.tryConvert(popup);
-    } catch {
-      // Chrome can refuse a move, say while a tab is being dragged. The popup
-      // then just stays a popup, which is what it was going to be anyway.
-    }
-  }
-
-  private async tryConvert(popup: BrowserWindow): Promise<void> {
     const tab = await this.pageTabs.find(popup);
     if (tab === undefined) {
       return;

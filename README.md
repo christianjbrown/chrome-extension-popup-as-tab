@@ -78,7 +78,7 @@ How it fits together, all in `src`:
 - **`beside-opener.ts`** is the first rule: right after the opener, if its window is on screen.
 - **`last-focused-window.ts`** is the fallback: the end of the ordinary window you used most recently.
 - **`visible-same-profile.ts`** says which windows can take the tab: on screen, and on the same side of incognito.
-- **`tab-placer.ts`** moves the tab, makes it active and focuses its window.
+- **`tab-placer.ts`** moves the tab, makes it active and focuses its window, or leaves it be if Chrome refuses the move.
 
 Every class gets its collaborators through its constructor, behind an interface, so each one is tested on its own with fakes. A new way of picking where a tab goes is a new rule class, not an edit to an old one.
 
